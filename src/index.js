@@ -1,34 +1,21 @@
 module.exports = function check(str, bracketsConfig) {
-  str = str.split(""); // str теперь массив
-  arr = [];
+    return !str.split("").reduce((stack, item, index) => {
+        if (bracketsConfig.includes(item)) return stack;
+        if (!index) {
+            stack.push(item);
+            return stack;
+        }
 
-for ( let i = 0; i < bracketsConfig.length; i++ ) {
-  for ( let j = 0; j < bracketsConfig[i].length; j++ ) {
-    arr.push( bracketsConfig[i] [j] );
-    }
-}
-console.log(arr);
+        checkingTheOpposite(stack[stack.length - 1], item, bracketsConfig)
+            ? stack.pop()
+            : stack.push(item);
 
-bracketsConfig = arr.join('');
+        return stack;
+    }, []).length;
+};
 
-/* убрал пустые ячейки */
-
-for(let i=str.length; i>=0; i--){
-  if (str[i] === " ") str.splice(i, 1);
-  }
-
-for (let j=0; j<bracketsConfig.length; j+=2){
-  
-  for (let i = 0; i<str.length; i++){
-    
-    if (str[i] == bracketsConfig[j] && str[i+1] == bracketsConfig[j+1]){
-      
-      
-      str.splice(i, 2); 
-      i=-2; j=0; 
-    }
-
-  }
-}
-return str == '';
+function checkingTheOpposite(first, second, bracketsConfig) {
+    return !!bracketsConfig.filter(
+        (item) => item.includes(first) && item.includes(second, 1)
+    ).length;
 }
